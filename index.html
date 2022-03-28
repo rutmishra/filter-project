@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <title>Filter Project</title>
+</head>
+<body>
+    <!-- Modal for adding items to table STARTS -->
+    <div class="modal" id="add_modal" onclick="closeModal(event, 'add_modal')">
+        <div class="modal_child">
+            <i class="fa-solid fa-circle-xmark" id="close_add_modal" onclick="toggleModal(false, 'add_modal')"></i>
+            <h2>Add items</h2>
+            <div class="entries">
+                <input type="text" placeholder="Product Name" class="firstAdd" id="product_name">
+                <input type="text" placeholder="Category Name" id="product_category">
+                <input type="number" placeholder="Price" id="product_price">
+                <input type="text" placeholder="image" id="product_image">
+                <input type="text" placeholder="Seller Name" id="product_seller">
+                <input type="text" placeholder="Company Name" id="product_company">
+            </div>
+            <div class="buttonWrapper">
+                <button onclick="addProduct()">Add</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for adding items to table ENDS -->
+
+    <!-- Modal for viewing the product Start -->
+    <div class="modal view_modal" id="view_modal" onclick="closeModal(event, 'view_modal')">
+        <div class="modal_child view_modal_child">
+            <i class="fa-solid fa-circle-xmark" id="close_view_modal" onclick="toggleModal(false,'view_modal')"></i>
+            <div class="view_modal_wrapper">
+                <div class="view_modal_img">
+                    <img src="./download.png" alt="dummy image" class="pro_img", id="pro_img">
+                    <h1 id="pro_name" class="pro_name">Dummy</h1>
+                </div>
+                <div class="product_desc">
+                    <p>Seller: <span class="seller_span" id="seller_span"></span></p>
+                    <p>Company: <span class="company_span" id="company_span"></span></p>
+                    <p>Price: <span class="price_span" id="price_span"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for DELETE CONFIRMATION -->
+    <div class="modal delete_modal" id="delete_modal" onclick="closeModal(event, 'delete_modal')">
+        <div class="modal_child delete_modal_child">
+            <p>Do you really want to delete?</p>
+            <div class="delete_buttons">
+                <button onclick="confirmation(true)">Yes</button>
+                <button onclick="confirmation(false)">No</button>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- Modal for viewing the product End -->
+
+    <!-- Modal for updating data in table STARTS -->
+    <div class="modal" id="update_modal" onclick="closeModal(event, 'update_modal')">
+        <div class="modal_child">
+            <i class="fa-solid fa-circle-xmark" id="close_add_modal" onclick="toggleModal(false, 'update_modal')"></i>
+            <h2>Edit Product</h2>
+            <div class="entries">
+                <input type="text" placeholder="Product Name" class="firstAdd" id="product_name_up">
+                <input type="text" placeholder="Category Name" id="product_category_up">
+                <input type="number" placeholder="Price" id="product_price_up">
+                <input type="text" placeholder="image" id="product_image_up">
+                <input type="text" placeholder="Seller Name" id="product_seller_up">
+                <input type="text" placeholder="Company Name" id="product_company_up">
+            </div>
+            <div>
+                <button onclick="updateProduct()">Update</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for updating data in table ENDS -->
+
+
+
+    <!-- Filtering of products STARTS  -->
+    <div class="filters">
+        <div>
+            <input type="text" placeholder="Enter a product name" onkeyup="readValue(event, 'name')">
+
+            <select onchange="readValue(event, 'category')">
+                <option value="">Selection a Category</option>
+                <option value="electronics">Electronics</option>
+                <option value="appliances">Appliances</option>
+                <option value="wearable">Wearable</option>
+                <option value="electrical">Electrical</option>
+            </select>
+
+            <select onchange="readValue(event, 'priceRange')">
+                <option value="">Select a price range</option>
+                <option value="1-10000">1-10000</option>
+                <option value="10000-20000">10000-20000</option>
+                <option value="20000-30000">20000-30000</option>
+                <option value="30000-40000">30000-40000</option>
+                <option value="40000-50000">40000-50000</option>
+            </select>
+
+            <select onchange="readValue(event, 'company')">
+                <option value="">Select a company</option>
+                <option value="apple">Apple</option>
+                <option value="prestige">Prestige</option>
+                <option value="samsung">Samsung</option>
+                <option value="lg">LG</option>
+                <option value="panasonic">Panasonic</option>
+                <option value="xiaomi">Xiaomi</option>
+                <option value="phillips">Phillips</option>
+            </select>
+
+            <input type="text" placeholder="Select a seller" onkeyup="readValue(event, 'seller')">
+
+        </div>
+        <button onclick = "filter()">Filter</button>
+    </div>
+    <!-- Filtering of Products ENDS  -->
+    
+    <div class="data_table">
+        <div class="add_items">
+            <button class="addItems" id="addItems" onclick="toggleModal(true, 'add_modal')">Add Items</button>
+        </div>
+        <table>
+           <thead>
+               <tr>
+                   <th id="slNo">#</th>
+                   <th>Name</th>
+                   <th>Category</th>
+                   <th>Price</th>
+                   <th>Seller</th>
+                   <th>Company</th>
+                   <th>Image</th>
+                   <th>Action</th>
+               </tr>
+           </thead>
+           <tbody id="data"></tbody>
+        </table>
+        <div class="message" id="message">
+            No Data Found!
+        </div>
+
+        <!-- paggination section -->
+        <div class="pagination">
+            <div class="pagination_buttons">
+                <button class="pagination_button" id="prev" onclick="prev()">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Back
+                </button>
+                <button class="pagination_button" id="next" onclick="next()">
+                    Next
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <input type="text" placeholder="Jump to page number" class="jumptopage" onkeyup="openPage(Number(event.target.value))">
+            </div>
+            <div class="pagination_desc">
+                <p>Page <span id="currentpage">1</span> of <span id="totalpages">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="./other.js"></script>
+</body>
+</html>
